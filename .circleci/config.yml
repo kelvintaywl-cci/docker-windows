@@ -9,6 +9,8 @@ executors:
 jobs:
   build:
     executor: win
+    environment:
+      DOCKER_CLI_EXPERIMENTAL: enabled
     steps:
       - checkout
       - run: docker buildx version
