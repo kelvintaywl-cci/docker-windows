@@ -12,3 +12,5 @@ jobs:
     steps:
       - checkout
       - run: docker version
+      - run: docker build -t win -f Dockerfile .
+      - run: docker image ls
