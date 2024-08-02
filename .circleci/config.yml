@@ -1,0 +1,14 @@
+version: 2.1
+
+executors:
+  win:
+    machine:
+      image: windows-server-2022-gui:current
+    resource_class: windows.medium
+
+jobs:
+  build:
+    executor: win
+    steps:
+      - checkout
+      - run: docker version
