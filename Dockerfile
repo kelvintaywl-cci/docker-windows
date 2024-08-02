@@ -1,7 +1,8 @@
 # Sample Dockerfile
 
 # Indicates that the windowsservercore image will be used as the base image.
-FROM mcr.microsoft.com/windows/servercore:ltsc2019
+# https://hub.docker.com/r/microsoft/windows-servercore
+FROM mcr.microsoft.com/windows/servercore:ltsc2022
 
 LABEL repo="github.com/kelvintaywl-cci/docker-windows"
 
