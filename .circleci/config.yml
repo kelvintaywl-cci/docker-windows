@@ -11,6 +11,36 @@ jobs:
     executor: win
     steps:
       - checkout
-      - run: docker version
-      - run: docker build -t win -f Dockerfile .
-      - run: docker image ls
+      - run:
+          name: Check Docker settings (for buildx)
+          command: |
+            docker version
+            docker buildx version
+            docker context inspect
+      - run:
+          name: Setup docker buildx
+          command: |
+            docker context create circleci
+            docker buildx create --use circleci
+  
+            docker buildx ls
+            docker context inspect circleci
+      - restore_cache:
+          keys:
+          - hello-buildx-docker-{{ arch }}-{{ .Branch }}-
+          - hello-buildx-docker-{{ arch }}-
+      - run:
+          name: Docker buildx with local cache
+          command: |
+            docker buildx build --progress=plain \
+              --tag="${DOCKER_REGISTRY}/${DOCKER_USER}/hello-buildx:${CIRCLE_SHA1}" \
+              --cache-to=type=local,mode=max,dest=./dockercache \
+              --cache-from=type=local,src=./dockercache \
+              --output=type=docker \
+              .
+            docker image ls
+      - save_cache:
+          key: hello-buildx-docker-{{ arch }}-{{ .Branch }}-{{ checksum "/tmp/dockercache/index.json" }}
+          paths:
+          - ./dockercache
+
